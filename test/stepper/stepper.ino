@@ -1,16 +1,21 @@
-#define STEP_DELAY_US 800   // controls speed
+#include <Servo.h>
+
+#define STEP_DELAY_US 800  // controls speed
 
 #define CAMERA_STEP_PIN 2
-#define CAMERA_DIR_PIN  3
-
+#define CAMERA_DIR_PIN 3
+#define SERVO_PIN 9
 #define LASER_STEP_PIN 5
-#define LASER_DIR_PIN  6
+#define LASER_DIR_PIN 6
+
+Servo servoMotor;
 
 void setup() {
   pinMode(CAMERA_STEP_PIN, OUTPUT);
   pinMode(CAMERA_DIR_PIN, OUTPUT);
   pinMode(LASER_STEP_PIN, OUTPUT);
   pinMode(LASER_DIR_PIN, OUTPUT);
+  servoMotor.attach(SERVO_PIN);
 
   Serial.begin(9600);
 }
@@ -37,10 +42,20 @@ void processCommand(String command) {
     Serial.print("OK: laser ");
     Serial.println(steps);
 
+  } else if (command.startsWith("servo ")) {
+    int angle = command.substring(6).toInt();
+    moveServo(angle);
+    Serial.print("OK: servo ");
+    Serial.println(angle);
+
   } else {
     Serial.print("ERR: unknown command: ");
     Serial.println(command);
   }
+}
+
+void moveServo(int angle) {
+  servoMotor.write(angle);
 }
 
 void moveCamera(int steps) {
