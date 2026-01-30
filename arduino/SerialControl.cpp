@@ -3,6 +3,7 @@
 #include "StepperControl.h"
 #include "ServoControl.h"
 #include "MotionPlanner.h"
+#include "Target.h"
 
 #define SERIAL_BAUD 115200
 #define BUFFER_SIZE 64
@@ -72,7 +73,7 @@ void handleCommand(char* cmd) {
       return;
     }
 
-    // You will handle motion logic here
+    targetBird(cx, cy, x1, y1, x2, y2);
     return;
   }
 

@@ -1,22 +1,23 @@
 #include <Arduino.h>
 #include "StepperControl.h"
 #include "Pins.h"
+#include "PositionTracker.h"
 
 #define STEP_DELAY_US 800   // controls speed
 
 void initSteppers() {
-  pinMode(X_STEP_PIN, OUTPUT);
-  pinMode(X_DIR_PIN, OUTPUT);
+  pinMode(CAMERA_STEP_PIN, OUTPUT);
+  pinMode(CAMERA_DIR_PIN, OUTPUT);
 
-  pinMode(Y_STEP_PIN, OUTPUT);
-  pinMode(Y_DIR_PIN, OUTPUT);
+  pinMode(LASER_STEP_PIN, OUTPUT);
+  pinMode(LASER_DIR_PIN, OUTPUT);
 }
 
 void moveCamera(int steps) {
   if (steps > 0) {
-    moveX(steps, HIGH);  // Move X forward
+    moveCameraStepper(steps, HIGH);  // Move X forward
   } else if (steps < 0) {
-    moveX(-steps, LOW);  // Move X backward
+    moveCameraStepper(-steps, LOW);  // Move X backward
   }
 }
 
@@ -31,10 +32,12 @@ void moveStepper(int stepPin, int dirPin, int steps, bool dir) {
   }
 }
 
-void moveX(int steps, bool dir) {
-  moveStepper(X_STEP_PIN, X_DIR_PIN, steps, dir);
+void moveCameraStepper(int steps, bool dir) {
+  moveStepper(CAMERA_STEP_PIN, CAMERA_DIR_PIN, steps, dir);
+  updateCameraPOS(dir ? steps : -steps);
 }
 
-void moveY(int steps, bool dir) {
-  moveStepper(Y_STEP_PIN, Y_DIR_PIN, steps, dir);
+void moveLaserStepper(int steps, bool dir) {
+  moveStepper(LASER_STEP_PIN, LASER_DIR_PIN, steps, dir);
+  updateLaserPOS(dir ? steps : -steps);
 }
