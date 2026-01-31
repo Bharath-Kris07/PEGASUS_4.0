@@ -92,6 +92,21 @@ void processSingleCommand(String command) {
     Serial.println(angle);
     moveServoLaser(angle);
 
+  } else if (command.startsWith("laserxx ")) {
+    int x1, x2;
+    int matched = sscanf(command.c_str(), "laserxx %d %d", &x1, &x2);
+    if (matched != 2) {
+      Serial.print("ERR: invalid laserxx command: ");
+      Serial.println(command);
+      return;
+    }
+
+    Serial.print("OK: laserxx ");
+    Serial.print(x1);
+    Serial.print(" ");
+    Serial.println(x2);
+    moveLaserxx(x1, x2);
+
   } else if (command.startsWith("wait ")) {
     int duration = command.substring(5).toInt();
     delay(duration);
@@ -127,6 +142,19 @@ void moveServoLaser(int angle) {
   servoAngle = angle;
   laserState = false;
   digitalWrite(LASER_PIN, LOW);
+}
+
+void moveLaserxx(int x1, int x2) {
+  moveLaser(x1);
+  for (int i = x1; i < x2; i+=50) {
+    moveLaser(50);
+    if (millis() - lastBlink >= interval) {
+      lastBlink = millis();
+      digitalWrite(LASER_PIN, laserState ? HIGH : LOW);
+      laserState = !laserState;
+    }
+    delay(15);
+  }
 }
 
 void moveCamera(int steps) {
