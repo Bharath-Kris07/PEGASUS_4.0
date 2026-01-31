@@ -11,6 +11,8 @@
 
 Servo servoMotor;
 int servoAngle = 90;
+int servoMinAngle = 180;
+int servoMaxAngle = 135;
 
 bool laserState = false;
 unsigned long lastBlink = 0;
@@ -147,7 +149,9 @@ void moveServoLaser(int angle) {
 void moveLaserxx(int x1, int x2) {
   moveLaser(x1);
   for (int i = x1; i < x2; i+=50) {
-    moveLaser(50);
+    moveLaser(i);
+    moveServoLaser(servoMaxAngle);
+    moveServoLaser(servoMinAngle);
     if (millis() - lastBlink >= interval) {
       lastBlink = millis();
       digitalWrite(LASER_PIN, laserState ? HIGH : LOW);
