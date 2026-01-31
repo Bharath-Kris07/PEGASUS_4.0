@@ -30,7 +30,24 @@ void loop() {
   }
 }
 
-void processCommand(String command) {
+void processCommand(String commandLine) {
+  commandLine.trim();
+
+  int start = 0;
+  while (true) {
+    int sep = commandLine.indexOf(';', start);
+
+    if (sep == -1) {
+      processSingleCommand(commandLine.substring(start));
+      break;
+    }
+
+    processSingleCommand(commandLine.substring(start, sep));
+    start = sep + 1;
+  }
+}
+
+void processSingleCommand(String command) {
   command.trim();
 
   if (command.startsWith("camera ")) {
@@ -56,6 +73,12 @@ void processCommand(String command) {
     moveServo(angle);
     Serial.print("OK: servo ");
     Serial.println(angle);
+
+  } else if (command.startsWith("wait ")) {
+    int duration = command.substring(5).toInt();
+    delay(duration);
+    Serial.print("OK: wait ");
+    Serial.println(duration);
 
   } else {
     Serial.print("ERR: unknown command: ");
