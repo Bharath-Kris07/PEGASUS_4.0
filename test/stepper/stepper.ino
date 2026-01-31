@@ -68,6 +68,14 @@ void processSingleCommand(String command) {
     Serial.print("OK: laser ");
     Serial.println(laserState ? "ON" : "OFF");
 
+  } else if (command == "laseron") {
+    digitalWrite(LASER_PIN, HIGH);
+    Serial.print("OK: laser ON");
+
+  } else if (command == "laseroff") {
+    digitalWrite(LASER_PIN, LOW);
+    Serial.print("OK: laser OFF");
+
   } else if (command.startsWith("servo ")) {
     int angle = command.substring(6).toInt();
     moveServo(angle);
