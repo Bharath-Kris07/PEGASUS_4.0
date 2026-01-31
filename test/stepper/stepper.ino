@@ -18,6 +18,8 @@ bool laserState = false;
 unsigned long lastBlink = 0;
 const unsigned long interval = 500; // ms
 
+void blinkLaser();
+
 void setup() {
   pinMode(CAMERA_STEP_PIN, OUTPUT);
   pinMode(CAMERA_DIR_PIN, OUTPUT);
@@ -136,11 +138,7 @@ void moveServoLaser(int angle) {
       i++;
     } else {
       i--;
-    }
-    servoMotor.write(i);
-    if (millis() - lastBlink >= interval) {
-      lastBlink = millis();
-      digitalWrite(LASER_PIN, laserState ? HIGH : LOW);
+    blinkLaser();
       laserState = !laserState;
     }
     delay(15);
@@ -156,12 +154,16 @@ void moveLaserxx(int x1, int x2) {
     moveLaser(i);
     moveServoLaser(servoMaxAngle);
     moveServoLaser(servoMinAngle);
-    if (millis() - lastBlink >= interval) {
-      lastBlink = millis();
-      digitalWrite(LASER_PIN, laserState ? HIGH : LOW);
-      laserState = !laserState;
-    }
+    blinkLaser();
     delay(15);
+  }
+}
+
+void blinkLaser() {
+  if (millis() - lastBlink >= interval) {
+    lastBlink = millis();
+    digitalWrite(LASER_PIN, laserState ? HIGH : LOW);
+    laserState = !laserState;
   }
 }
 
