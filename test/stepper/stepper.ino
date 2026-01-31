@@ -94,14 +94,18 @@ void processSingleCommand(String command) {
     Serial.println(angle);
     moveServoLaser(angle);
 
-  } else if (command.startsWith("laserxx ")) {
-    int x1, x2;
-    int matched = sscanf(command.c_str(), "laserxx %d %d", &x1, &x2);
-    if (matched != 2) {
-      Serial.print("ERR: invalid laserxx command: ");
-      Serial.println(command);
-      return;
-    }
+} else if (command.startsWith("laserxx ")) {
+  int firstSpace = command.indexOf(' ');
+  int secondSpace = command.indexOf(' ', firstSpace + 1);
+
+  if (secondSpace == -1) {
+    Serial.print("ERR: invalid laserxx command: ");
+    Serial.println(command);
+    return;
+  }
+
+  int x1 = command.substring(firstSpace + 1, secondSpace).toInt();
+  int x2 = command.substring(secondSpace + 1).toInt();
 
     Serial.print("OK: laserxx ");
     Serial.print(x1);
